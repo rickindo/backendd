@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garagem Conectada - APIs e Viagens</title>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+<body>
+
+    <div class="container">
+        <h1>Garagem Conectada: APIs e Viagens</h1>
+
+        <div id="notificacoes-container"></div>
+
+
+        <div class="section" id="add-vehicle-section">
+            <h2>Adicionar Veículo</h2>
+            <form id="form-add-veiculo">
+                <label for="veiculo-tipo">Tipo:</label>
+                <select id="veiculo-tipo" required>
+                    <option value="Carro">Carro</option>
+                    <option value="CarroEsportivo">Carro Esportivo</option>
+                    <option value="Caminhao">Caminhão</option>
+                </select>
+
+                <label for="veiculo-placa">Placa:</label>
+                <input type="text" id="veiculo-placa" required placeholder="AAA-1234">
+
+                <label for="veiculo-modelo">Modelo:</label>
+                <input type="text" id="veiculo-modelo" required>
+
+                <label for="veiculo-cor">Cor:</label>
+                <input type="text" id="veiculo-cor" required>
+
+
+                <div id="campos-carro" class="campos-especificos">
+                    <label for="carro-portas">Número de Portas:</label>
+                    <input type="number" id="carro-portas" value="4" min="2">
+                </div>
+                <div id="campos-carroesportivo" class="campos-especificos" style="display: none;">
+                     <label for="carroesportivo-portas">Número de Portas:</label>
+                     <input type="number" id="carroesportivo-portas" value="2" min="2">
+                 </div>
+                 <div id="campos-caminhao" class="campos-especificos" style="display: none;">
+                    <label for="caminhao-eixos">Número de Eixos:</label>
+                    <input type="number" id="caminhao-eixos" value="2" min="2">
+                    <label for="caminhao-capacidade">Capacidade de Carga (kg):</label>
+                    <input type="number" id="caminhao-capacidade" value="5000" min="0">
+                 </div>
+
+                <button type="submit">Adicionar à Garagem</button>
+            </form>
+        </div>
+
+
+
+        <div class="section" id="garage-section">
+            <h2>Minha Garagem</h2>
+            <ul id="lista-garagem">
+                 <p>Nenhum veículo na garagem.</p>
+            </ul>
+        </div>
+
+
+        <div class="section" id="detalhes-veiculo-section" style="display: none;">
+            <h2 id="detalhes-veiculo-titulo">Detalhes, Manutenção e Interação</h2>
+            <button id="btn-voltar-garagem">Voltar para Garagem</button>
+
+            <div class="interaction-section">
+                <h3>Status Atual & Interação</h3>
+                <div id="detalhes-veiculo-status">
+                    Carregando status...
+                </div>
+                <div id="detalhes-veiculo-botoes">
+                    <button id="btn-detail-ligar">Ligar</button>
+                    <button id="btn-detail-desligar">Desligar</button>
+                    <button id="btn-detail-acelerar">Acelerar</button>
+                    <button id="btn-detail-buzinar">Buzinar</button>
+                    <button id="btn-detail-turbo" class="btn-especifico" style="display:none;">Ativar/Desativar Turbo</button>
+                    <button id="btn-detail-carregar" class="btn-especifico" style="display:none;">Carregar (1000kg)</button>
+                    <button id="btn-detail-descarregar" class="btn-especifico" style="display:none;">Descarregar (500kg)</button>
+                </div>
+                 <!-- A imagem do veículo (que seria adicionada na outra funcionalidade) não está aqui neste HTML base -->
+            </div>
+
+
+            <div class="api-details-section">
+                <h3>Detalhes Extras (API Simulada)</h3>
+                <button id="btn-ver-detalhes-extras" style="margin-bottom: 10px;">Ver Detalhes Extras</button>
+                <div id="detalhes-extras-api">
+                    <p>Clique no botão acima para carregar detalhes.</p>
+                </div>
+            </div>
+
+
+
+            <div class="maintenance-details">
+                <h3>Histórico de Manutenção</h3>
+                <ul id="lista-historico">
+                     <li>Nenhum histórico registrado.</li>
+                </ul>
+
+                <h3>Agendamentos Futuros</h3>
+                <ul id="lista-agendamentos">
+                     <li>Nenhum agendamento futuro.</li>
+                </ul>
+
+                <h3>Agendar Nova Manutenção</h3>
+                <form id="form-agendamento">
+                    <input type="hidden" id="agendamento-veiculo-placa">
+                    <label for="agenda-data">Data:</label>
+                    <input type="date" id="agenda-data" required>
+                    <label for="agenda-tipo">Tipo de Serviço:</label>
+                    <input type="text" id="agenda-tipo" required placeholder="Ex: Troca de óleo">
+                    <label for="agenda-custo">Custo (R$):</label>
+                    <input type="number" id="agenda-custo" step="0.01" min="0" required placeholder="150.00">
+                    <label for="agenda-descricao">Descrição (Opcional):</label>
+                    <textarea id="agenda-descricao" rows="3"></textarea>
+                    <button type="submit">Agendar Serviço</button>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="section" id="travel-planner-section">
+            <h2>Planejar Viagem (Previsão do Tempo)</h2>
+            <div class="travel-form">
+                <label for="destino-viagem">Cidade de Destino:</label>
+                <input type="text" id="destino-viagem" placeholder="Ex: Rio de Janeiro">
+                <button id="verificar-clima-btn">Verificar Clima</button>
+            </div>
+
+            <!-- INÍCIO: Botões de Filtro de Previsão -->
+            <div id="previsao-filtros" style="margin-top: 15px; margin-bottom: 10px; display: none;">
+                <button class="btn-filtro-clima" data-periodo="hoje">Hoje</button>
+                <button class="btn-filtro-clima" data-periodo="amanha">Amanhã</button>
+                <button class="btn-filtro-clima" data-periodo="3dias">Próximos 3 dias</button>
+            </div>
+    
+
+            <div id="previsao-tempo-resultado" class="api-result">
+                <p>Digite uma cidade e clique em verificar.</p>
+            </div>
+             <p class="api-key-warning">
+        
+            </p>
+        </div>
+
+    </div>
+
+    <script src="js/manuntencao.js"></script>
+    <script src="js/veiculo.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+
+</body>
+</html>

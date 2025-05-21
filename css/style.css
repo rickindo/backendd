@@ -1,0 +1,429 @@
+/* Estilos Gerais */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 15px;
+}
+
+h2 {
+    margin-top: 30px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: calc(100% - 22px); /* Considera padding e border */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+/* Estilos específicos das seções de interação, detalhes da API e manutenção */
+.interaction-section,
+.api-details-section,
+.maintenance-details,
+#travel-planner-section .travel-form-container {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.api-details-section h3,
+.maintenance-details h3,
+#travel-planner-section h2 { /* Este H2 é o da seção, não um sub-h3 */
+    margin-top: 10px; /* Reduzido, pois já é um H2 principal da seção */
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+    text-align: left; /* Mantido, mas pode ser removido se o padrão for bom */
+}
+
+/* Seções individuais do formulário e garagem */
+.section {
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}
+
+#add-vehicle-section form label,
+#form-agendamento label {
+    margin-top: 10px;
+}
+
+#add-vehicle-section form button[type="submit"],
+#form-agendamento button[type="submit"] {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.campos-especificos {
+    margin-top: 10px;
+    padding-left: 15px;
+    border-left: 3px solid #007bff;
+}
+
+/* Detalhes de API e Previsão do Tempo */
+#detalhes-extras-api,
+#previsao-tempo-resultado {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    min-height: 40px;
+}
+#detalhes-extras-api p,
+#previsao-tempo-resultado p,
+#previsao-tempo-resultado h3,
+#previsao-tempo-resultado h4 { /* Adicionado para títulos dentro da previsão */
+    margin: 5px 0;
+}
+#detalhes-extras-api strong,
+#previsao-tempo-resultado strong {
+    color: #0056b3;
+}
+
+/* Planejador de Viagem */
+#travel-planner-section .travel-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff; /* Removido da section, aplicado aqui */
+    border: none; /* Removido da section, aplicado aqui */
+    padding: 0; /* Removido da section, aplicado aqui */
+}
+#travel-planner-section label { /* Label do input da cidade */
+    margin-bottom: 0;
+    font-weight: normal;
+}
+#destino-viagem {
+    flex-grow: 1;
+    margin-bottom: 0; /* Ajustado */
+    min-width: 150px;
+}
+#verificar-clima-btn {
+     padding: 10px 15px; /* Consistente com outros botões */
+     margin: 0; /* Removida margem padrão se houver */
+}
+
+.api-key-warning {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+}
+.api-key-warning strong {
+    color: #dc3545;
+}
+
+/* Lista da Garagem */
+#lista-garagem li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+#lista-garagem li:last-child {
+    border-bottom: none;
+}
+#lista-garagem li p {
+    margin: 0;
+    flex-grow: 1;
+}
+#lista-garagem button { /* Botões dentro da lista da garagem */
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+#lista-garagem .btn-detalhes,
+#lista-garagem .btn-remover-veiculo { /* Se for adicionar botão de remover */
+    margin-left: 5px;
+}
+/* #lista-garagem .btn-ver-extras foi movido para dentro dos detalhes */
+#lista-garagem .btn-remover-veiculo { /* Se existir */
+    background-color: #dc3545;
+}
+#lista-garagem .btn-remover-veiculo:hover { /* Se existir */
+    background-color: #c82333;
+}
+
+
+/* Detalhes do Veículo e Botões Específicos */
+#detalhes-veiculo-section {
+    /* display: none; já está inline */
+}
+#btn-voltar-garagem {
+    background-color: #6c757d;
+    margin-bottom: 20px;
+}
+#btn-voltar-garagem:hover {
+    background-color: #5a6268;
+}
+
+#detalhes-veiculo-status {
+    padding: 10px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+#detalhes-veiculo-botoes button { /* Botões de interação do veículo */
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+#detalhes-veiculo-botoes .btn-especifico { /* Botões turbo, carregar, etc. */
+    margin-top: 5px; /* Pode ser ajustado ou removido se margin-bottom for suficiente */
+    background-color: #28a745;
+}
+#detalhes-veiculo-botoes .btn-especifico:hover {
+    background-color: #218838;
+}
+
+/* Histórico de Manutenção e Agendamentos */
+.maintenance-details form { /* Formulário de agendar manutenção */
+    margin-top: 15px;
+}
+
+/* Notificações */
+#notificacoes-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 300px;
+}
+.notificacao {
+    background-color: #333;
+    color: white;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    opacity: 0.95; /* Um pouco menos transparente */
+    font-size: 0.9rem;
+}
+.notificacao.sucesso {
+    background-color: #28a745;
+}
+.notificacao.erro {
+    background-color: #dc3545;
+}
+.notificacao.info {
+    background-color: #17a2b8;
+}
+.notificacao.warning {
+    background-color: #ffc107;
+    color: #212529; /* Texto mais escuro para contraste com amarelo */
+}
+
+/* ESTILOS ADICIONADOS PARA FILTRO DE PREVISÃO */
+#previsao-filtros {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.btn-filtro-clima {
+    background-color: #6c757d;
+    color: white;
+    padding: 8px 12px;
+    margin: 0 5px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.btn-filtro-clima:hover {
+    background-color: #5a6268;
+}
+
+.btn-filtro-clima.active { /* Estilo para o botão ativo */
+    background-color: #0056b3;
+    font-weight: bold;
+}
+
+#previsao-tempo-resultado .dia-previsao {
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+#previsao-tempo-resultado .dia-previsao h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #0056b3;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+#previsao-tempo-resultado .hora-previsao {
+    padding: 5px 0;
+    font-size: 0.9em;
+    border-bottom: 1px dashed #eee;
+}
+#previsao-tempo-resultado .hora-previsao:last-child {
+    border-bottom: none;
+}
+/* FIM DOS ESTILOS ADICIONADOS */
+
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    h1 {
+        font-size: 1.8rem;
+    }
+    h2 {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 600px) {
+    #travel-planner-section .travel-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+     #destino-viagem, #verificar-clima-btn {
+         width: 100%;
+         box-sizing: border-box; /* Garante que padding não aumente a largura */
+     }
+     #verificar-clima-btn {
+        margin-top: 10px; /* Espaço quando empilhado */
+     }
+
+     #lista-garagem li {
+        flex-direction: column;
+        align-items: flex-start;
+     }
+      #lista-garagem li p {
+         width: 100%; /* Ocupa toda a largura */
+         margin-bottom: 10px; /* Espaço para os botões abaixo */
+      }
+       #lista-garagem li div.botoes-container { /* Para agrupar botões */
+           display: flex;
+           gap: 5px; /* Espaço entre botões */
+           width: 100%;
+           justify-content: flex-start; /* Alinha à esquerda */
+       }
+       #lista-garagem li div.botoes-container button {
+           flex-grow: 1; /* Faz botões dividirem o espaço */
+       }
+
+
+    #add-vehicle-section form,
+    .maintenance-details form {
+        /* display: flex; e flex-direction: column; já são o padrão para blocos,
+           mas pode ser explícito se necessário para sobrescrever algo. */
+    }
+    /* Inputs e botões de formulário já estão com width: 100% (ou calc(100% - 22px))
+       e box-sizing: border-box, o que já os torna responsivos dentro de seus containers. */
+
+    #detalhes-veiculo-botoes button { /* Botões de interação do veículo */
+        width: calc(50% - 5px); /* Dois botões por linha, com gap */
+        margin-bottom: 10px;
+    }
+    #detalhes-veiculo-botoes button:nth-child(odd) { /* Ímpar */
+        margin-right: 10px; /* Espaço à direita */
+    }
+    #detalhes-veiculo-botoes button:nth-child(even) { /* Par */
+        margin-right: 0;
+    }
+     /* Se houver um número ímpar de botões, o último ocupará a linha inteira */
+    #detalhes-veiculo-botoes button:last-child:nth-child(odd) {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    /* Botões de filtro de previsão em telas pequenas */
+    #previsao-filtros {
+        display: flex;
+        flex-direction: column; /* Empilha os botões */
+        gap: 8px; /* Espaço entre eles */
+    }
+    .btn-filtro-clima {
+        width: 100%;
+        margin: 0; /* Remove margens laterais */
+    }
+}
