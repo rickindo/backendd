@@ -27,9 +27,9 @@ const somTurbo = new Audio("./audio/som_turbo.mp3");
 const somCarga = new Audio("./audio/som_carga.mp3");
 
 // --- Constantes ---
-// A OPENWEATHER_API_KEY FOI MOVIDA PARA O BACKEND (server.js e .env)
 const DADOS_VEICULOS_API_URL = './dados_veiculos_api.json';
-const BACKEND_API_URL = 'http://localhost:3001'; // URL do seu servidor backend
+// URL do seu servidor backend. Para produção, troque 'http://localhost:3000' pela URL do seu Render.
+const BACKEND_API_URL = 'http://localhost:3000'; 
 
 
 // --- Funções de Lógica de Veículos e Manutenção ---
@@ -268,37 +268,26 @@ function handleInteracao(acao) {
 }
 
 
-// --- Funções de API de Previsão do Tempo (MODIFICADA PARA USAR O BACKEND) ---
+// --- Funções de API de Previsão do Tempo ---
 async function buscarPrevisaoTempoDetalhada1(nomeCidade) {
-    // A API KEY e a chamada direta à OpenWeatherMap foram movidas para o backend.
-    // O frontend agora chama o nosso próprio backend.
-
     if (!nomeCidade) {
         throw new Error("Nome da cidade não pode ser vazio.");
     }
-
-    // A URL agora aponta para o seu servidor backend
     const url = `${BACKEND_API_URL}/api/previsao/${encodeURIComponent(nomeCidade)}`;
     console.log(`[Frontend] Buscando previsão do backend: ${url}`);
-
     try {
         const response = await fetch(url);
-        const data = await response.json(); // Tenta parsear como JSON em qualquer caso
-
+        const data = await response.json(); 
         if (!response.ok) {
-            // Se o backend retornou um erro, ele deve estar no corpo JSON com uma propriedade 'error'
             throw new Error(data.error || `Erro ${response.status} ao buscar previsão no servidor.`);
         }
-
         if (!data.list || data.list.length === 0 || !data.city) {
              throw new Error("Resposta da API de previsão (via backend) inválida ou incompleta.");
         }
         console.log("[Frontend] Dados da previsão recebidos do backend:", data);
-        return data; // Retorna os dados da OpenWeatherMap, encaminhados pelo nosso backend
-
+        return data;
     } catch (error) {
         console.error("[Frontend] Erro ao buscar previsão do tempo via backend:", error);
-        // A mensagem de erro já deve vir tratada do backend ou do catch do !response.ok
         throw new Error(`Falha ao buscar previsão: ${error.message}`);
     }
 }
@@ -321,13 +310,12 @@ async function handleVerificarClima1() {
     if (previsaoFiltrosContainer) previsaoFiltrosContainer.style.display = 'none';
 
     try {
-        const previsaoCompleta = await buscarPrevisaoTempoDetalhada1(nomeCidade); // Agora chama o backend
+        const previsaoCompleta = await buscarPrevisaoTempoDetalhada1(nomeCidade);
         ultimaPrevisaoCompleta = previsaoCompleta;
         ultimaCidadePesquisada = nomeCidade;
 
         if (previsaoFiltrosContainer) previsaoFiltrosContainer.style.display = 'block';
         filtrarEExibirPrevisao('hoje'); 
-
     } catch (error) {
         exibirErroPrevisao(error.message); 
         ultimaPrevisaoCompleta = null;
@@ -338,7 +326,7 @@ async function handleVerificarClima1() {
 
 function filtrarEExibirPrevisao(periodo) {
     if (!ultimaPrevisaoCompleta || !ultimaPrevisaoCompleta.list || ultimaPrevisaoCompleta.list.length === 0) {
-        const msg = ultimaCidadePesquisada ? `Nenhuma previsão carregada para ${ultimaCidadePesquisada}. Tente buscar novamente.` : "Busque uma cidade primeiro.";
+        const msg = ultimaCidadePesquisada ? `Nenhuma previsão carregada para ${ultimaCidadePesquisada}.` : "Busque uma cidade primeiro.";
         exibirErroPrevisao(msg); 
         if (previsaoFiltrosContainer) previsaoFiltrosContainer.style.display = 'none';
         return;
@@ -346,73 +334,124 @@ function filtrarEExibirPrevisao(periodo) {
 
     const { list, city } = ultimaPrevisaoCompleta;
     let dadosFiltrados = [];
-
     const hojeUtc = new Date();
     hojeUtc.setUTCHours(0,0,0,0); 
 
     if (periodo === 'hoje') {
-        dadosFiltrados = list.filter(item => {
-            const itemDateUtc = new Date(item.dt * 1000);
-            itemDateUtc.setUTCHours(0,0,0,0);
-            return itemDateUtc.getTime() === hojeUtc.getTime();
-        });
+        dadosFiltrados = list.filter(item => new Date(item.dt * 1000).getUTCDate() === hojeUtc.getUTCDate());
     } else if (periodo === 'amanha') {
         const amanhaUtc = new Date(hojeUtc);
         amanhaUtc.setUTCDate(hojeUtc.getUTCDate() + 1);
-        dadosFiltrados = list.filter(item => {
-            const itemDateUtc = new Date(item.dt * 1000);
-            itemDateUtc.setUTCHours(0,0,0,0);
-            return itemDateUtc.getTime() === amanhaUtc.getTime();
-        });
+        dadosFiltrados = list.filter(item => new Date(item.dt * 1000).getUTCDate() === amanhaUtc.getUTCDate());
     } else if (periodo === '3dias') {
         const diasUnicos = {};
-        let diasContados = 0;
-
-        for (const item of list) {
-            const itemDateUtc = new Date(item.dt * 1000);
-            itemDateUtc.setUTCHours(0,0,0,0);
-
-            if (itemDateUtc >= hojeUtc) { 
-                const diaStr = itemDateUtc.toISOString().slice(0,10);
-                if (!diasUnicos[diaStr]) {
-                    if (diasContados < 3) {
-                        diasUnicos[diaStr] = [];
-                        diasContados++;
-                    } else {
-                        if (diasUnicos[diaStr]) {
-                             diasUnicos[diaStr].push(item);
-                        } else {
-                            break; 
-                        }
-                    }
-                }
-                if (diasUnicos[diaStr]) {
-                     diasUnicos[diaStr].push(item);
-                }
-            }
-        }
-        dadosFiltrados = Object.values(diasUnicos); 
+        list.forEach(item => {
+            const diaStr = new Date(item.dt * 1000).toISOString().slice(0, 10);
+            if (!diasUnicos[diaStr]) diasUnicos[diaStr] = [];
+            diasUnicos[diaStr].push(item);
+        });
+        dadosFiltrados = Object.values(diasUnicos).slice(0, 3).flat();
     }
 
     exibirPrevisaoFiltrada(dadosFiltrados, periodo, city.name); 
     atualizarBotaoFiltroAtivo(periodo); 
 }
 
+// --- INÍCIO DAS NOVAS FUNÇÕES (ATIVIDADE B2.P1.A8) ---
+
+/**
+ * Exibe as dicas de manutenção na tela.
+ * @param {Array<Object>} dicas - Um array de objetos, onde cada objeto tem uma propriedade 'dica'.
+ * @param {string} titulo - O título a ser exibido acima da lista de dicas.
+ */
+function exibirDicasNaTela(dicas, titulo) {
+    const resultadoDiv = document.getElementById('resultado-dicas');
+    if (!resultadoDiv) {
+        console.error("Elemento #resultado-dicas não encontrado no DOM.");
+        return;
+    }
+
+    if (!dicas || dicas.length === 0) {
+        resultadoDiv.innerHTML = `<p class="notificacao warning">${titulo}: Nenhuma dica encontrada.</p>`;
+        return;
+    }
+
+    // Cria a lista de dicas em HTML
+    let html = `<h3>${titulo}</h3><ul>`;
+    dicas.forEach(item => {
+        html += `<li>${item.dica}</li>`;
+    });
+    html += `</ul>`;
+
+    resultadoDiv.innerHTML = html;
+}
+
+/**
+ * Busca as dicas de manutenção gerais do backend e as exibe.
+ */
+async function handleBuscarDicasGerais() {
+    const resultadoDiv = document.getElementById('resultado-dicas');
+    exibirLoading(resultadoDiv, "Buscando dicas gerais...");
+
+    try {
+        const response = await fetch(`${BACKEND_API_URL}/api/dicas-manutencao`);
+        if (!response.ok) {
+            throw new Error(`Erro ${response.status} ao buscar dicas.`);
+        }
+        const dicas = await response.json();
+        exibirDicasNaTela(dicas, 'Dicas Gerais de Manutenção');
+    } catch (error) {
+        console.error("Erro em handleBuscarDicasGerais:", error);
+        exibirNotificacao(error.message, "error");
+        if(resultadoDiv) resultadoDiv.innerHTML = `<p class="notificacao erro">Falha ao buscar dicas.</p>`;
+    }
+}
+
+/**
+ * Busca dicas de manutenção específicas para um tipo de veículo.
+ */
+async function handleBuscarDicasEspecificas() {
+    const inputTipo = document.getElementById('input-tipo-veiculo-dica');
+    const resultadoDiv = document.getElementById('resultado-dicas');
+    const tipoVeiculo = inputTipo.value.trim();
+
+    if (!tipoVeiculo) {
+        exibirNotificacao("Por favor, digite um tipo de veículo.", "warning");
+        return;
+    }
+    
+    exibirLoading(resultadoDiv, `Buscando dicas para ${tipoVeiculo}...`);
+
+    try {
+        const response = await fetch(`${BACKEND_API_URL}/api/dicas-manutencao/${encodeURIComponent(tipoVeiculo)}`);
+        const data = await response.json(); // Pega o JSON mesmo se for erro (para ler a msg)
+
+        if (!response.ok) {
+            // Usa a mensagem de erro vinda do backend, ou uma padrão.
+            throw new Error(data.error || `Erro ${response.status}`);
+        }
+        
+        exibirDicasNaTela(data, `Dicas Específicas para ${tipoVeiculo}`);
+
+    } catch (error) {
+        console.error("Erro em handleBuscarDicasEspecificas:", error);
+        exibirNotificacao(`Erro: ${error.message}`, "error");
+        if(resultadoDiv) resultadoDiv.innerHTML = `<p class="notificacao erro">Falha ao buscar dicas para "${tipoVeiculo}". Verifique o tipo e tente novamente.</p>`;
+    }
+}
+
+
+// --- FIM DAS NOVAS FUNÇÕES ---
+
 
 // --- Inicialização e Event Listeners ---
 document.addEventListener('DOMContentLoaded', () => {
-    // A validação da API Key foi movida para o backend.
-    // O frontend assume que o backend está configurado e tentará fazer a chamada.
-    // Se houver erro (ex: chave inválida no backend), o backend retornará um erro
-    // que será tratado pela função `handleVerificarClima` e `buscarPrevisaoTempoDetalhada`.
-
     // Habilita os campos de clima por padrão
     if (verificarClimaBtn) verificarClimaBtn.disabled = false;
     if (destinoViagemInput) {
         destinoViagemInput.disabled = false;
         destinoViagemInput.placeholder = "Ex: Rio de Janeiro";
     }
-    // Os filtros só aparecem após uma busca bem-sucedida.
     if (previsaoFiltrosContainer) previsaoFiltrosContainer.style.display = 'none';
 
 
@@ -469,6 +508,18 @@ document.addEventListener('DOMContentLoaded', () => {
         veiculoTipoSelect.addEventListener('change', atualizarCamposEspecificos); 
     }
 
+    // --- INÍCIO DOS NOVOS EVENT LISTENERS (ATIVIDADE B2.P1.A8) ---
+    const btnBuscarDicasGerais = document.getElementById('btn-buscar-dicas-gerais');
+    const btnBuscarDicasEspecificas = document.getElementById('btn-buscar-dicas-especificas');
+
+    if (btnBuscarDicasGerais) {
+        btnBuscarDicasGerais.addEventListener('click', handleBuscarDicasGerais);
+    }
+    if (btnBuscarDicasEspecificas) {
+        btnBuscarDicasEspecificas.addEventListener('click', handleBuscarDicasEspecificas);
+    }
+    // --- FIM DOS NOVOS EVENT LISTENERS ---
+
     verificarAgendamentos();
-    console.log("Garagem Conectada (com backend proxy e filtros de previsão) inicializada.");
+    console.log("Garagem Conectada (com backend turbinado) inicializada.");
 });
